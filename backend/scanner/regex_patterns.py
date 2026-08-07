@@ -114,6 +114,9 @@ _RAW_PATTERNS = [
      "IPv4 address"),
 ]
 
+# Backwards-compatible dictionary mapping lower-case entity name to regex string
+PATTERNS = {entity_type.lower(): pattern for pattern, entity_type, _, _ in _RAW_PATTERNS}
+
 
 @dataclass
 class PIIMatch:

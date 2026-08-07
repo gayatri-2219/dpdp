@@ -16,13 +16,11 @@ services:
       - key: GEMINI_API_KEY
         sync: false
 
-  - type: pserv
+  - type: redis
     name: dpdp-redis
-    env: docker
-    region: singapore
     plan: free
-    repo: https://github.com/render-examples/redis.git
-    branch: master
+    region: singapore
+    ipAllowList: []
 
 databases:
   - name: dpdp-db

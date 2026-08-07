@@ -1,0 +1,23 @@
+import { Loader2 } from 'lucide-react'
+import { cn } from '@/lib/utils'
+
+interface LoadingSpinnerProps {
+  className?: string
+  label?: string
+  size?: 'sm' | 'md' | 'lg'
+}
+
+export function LoadingSpinner({ className, label, size = 'md' }: LoadingSpinnerProps) {
+  const sizeClasses = {
+    sm: 'w-4 h-4',
+    md: 'w-8 h-8',
+    lg: 'w-12 h-12'
+  }
+
+  return (
+    <div className={cn("flex flex-col items-center justify-center space-y-3", className)}>
+      <Loader2 className={cn("animate-spin text-accent-primary", sizeClasses[size])} />
+      {label && <p className="text-sm text-slate-400 animate-pulse">{label}</p>}
+    </div>
+  )
+}

@@ -1,0 +1,156 @@
+[
+  {
+    "id": 1,
+    "title": "Consent Collection",
+    "section": "Section 6",
+    "section_key": "section_6",
+    "severity": "HIGH",
+    "check": "consent_exists",
+    "description": "Personal data must not be processed without free, specific, informed and unambiguous consent of the Data Principal.",
+    "remediation": "Implement a consent management system. Obtain explicit opt-in consent before collecting any personal data.",
+    "pii_triggers": ["AADHAAR", "PAN", "CREDIT_CARD", "PASSPORT", "EMAIL_ADDRESS", "MOBILE"]
+  },
+  {
+    "id": 2,
+    "title": "Data Minimization",
+    "section": "Section 8(3)",
+    "section_key": "section_8",
+    "severity": "MEDIUM",
+    "check": "data_minimization",
+    "description": "Data Fiduciary must ensure personal data collected is limited to what is necessary.",
+    "remediation": "Audit data collection practices. Remove unnecessary personal data fields.",
+    "pii_triggers": []
+  },
+  {
+    "id": 3,
+    "title": "Data Retention Policy",
+    "section": "Section 8(7)",
+    "section_key": "section_8",
+    "severity": "HIGH",
+    "check": "retention_policy_exists",
+    "description": "Personal data must be erased when the purpose for which it was collected is no longer served.",
+    "remediation": "Define and implement a data retention schedule. Delete data post-purpose.",
+    "pii_triggers": ["AADHAAR", "PAN", "CREDIT_CARD"]
+  },
+  {
+    "id": 4,
+    "title": "Notice to Data Principal",
+    "section": "Section 5",
+    "section_key": "section_5",
+    "severity": "HIGH",
+    "check": "notice_provided",
+    "description": "Data Fiduciary must provide itemized notice about what personal data is being collected and purpose.",
+    "remediation": "Create and display a clear privacy notice at point of data collection.",
+    "pii_triggers": []
+  },
+  {
+    "id": 5,
+    "title": "Sensitive Personal Data Protection",
+    "section": "Section 8(1)",
+    "section_key": "section_8",
+    "severity": "CRITICAL",
+    "check": "sensitive_data_protected",
+    "description": "Sensitive personal data (Aadhaar, financial data) requires additional protection measures.",
+    "remediation": "Encrypt all sensitive personal data at rest and in transit. Implement access controls.",
+    "pii_triggers": ["AADHAAR", "PAN", "CREDIT_CARD", "GSTIN", "IFSC"]
+  },
+  {
+    "id": 6,
+    "title": "Children's Data Safeguards",
+    "section": "Section 9",
+    "section_key": "section_9",
+    "severity": "CRITICAL",
+    "check": "children_data_consent",
+    "description": "Processing personal data of children requires verifiable parental consent.",
+    "remediation": "Implement age verification mechanisms and parental consent workflows.",
+    "pii_triggers": ["DOB", "DATE_TIME"]
+  },
+  {
+    "id": 7,
+    "title": "Cross-Border Data Transfer",
+    "section": "Section 16",
+    "section_key": "section_16",
+    "severity": "HIGH",
+    "check": "cross_border_compliance",
+    "description": "Transfer of personal data outside India requires government-approved conditions.",
+    "remediation": "Map all data flows. Ensure international transfers comply with government-notified restrictions.",
+    "pii_triggers": []
+  },
+  {
+    "id": 8,
+    "title": "Data Security Safeguards",
+    "section": "Section 8(5)",
+    "section_key": "section_8",
+    "severity": "HIGH",
+    "check": "security_safeguards",
+    "description": "Data Fiduciary must implement reasonable security safeguards to prevent personal data breach.",
+    "remediation": "Deploy encryption, access controls, audit trails and breach notification procedures.",
+    "pii_triggers": ["AADHAAR", "PAN", "CREDIT_CARD", "PASSPORT", "MOBILE", "EMAIL_ADDRESS"]
+  },
+  {
+    "id": 9,
+    "title": "Right to Access & Correction",
+    "section": "Section 11(1)",
+    "section_key": "section_11",
+    "severity": "MEDIUM",
+    "check": "data_principal_rights",
+    "description": "Data Principals have the right to access their data summary and request corrections.",
+    "remediation": "Implement a self-service portal for data subjects to view, correct and delete their data.",
+    "pii_triggers": []
+  },
+  {
+    "id": 10,
+    "title": "Grievance Redressal",
+    "section": "Section 11(5)",
+    "section_key": "section_11",
+    "severity": "MEDIUM",
+    "check": "grievance_mechanism_exists",
+    "description": "Data Fiduciary must have a mechanism for Data Principals to register complaints.",
+    "remediation": "Appoint a Data Protection Officer (DPO) or designated grievance officer with published contact details.",
+    "pii_triggers": []
+  },
+  {
+    "id": 11,
+    "title": "DPO Appointment (Significant Data Fiduciary)",
+    "section": "Section 10(1)",
+    "section_key": "section_10",
+    "severity": "HIGH",
+    "check": "dpo_appointed",
+    "description": "Significant Data Fiduciaries must appoint a Data Protection Officer based in India.",
+    "remediation": "Appoint an India-resident DPO and register with the Data Protection Board.",
+    "pii_triggers": []
+  },
+  {
+    "id": 12,
+    "title": "Data Protection Impact Assessment",
+    "section": "Section 10(2)(b)",
+    "section_key": "section_10",
+    "severity": "MEDIUM",
+    "check": "dpia_conducted",
+    "description": "Significant Data Fiduciaries must conduct periodic Data Protection Impact Assessments.",
+    "remediation": "Conduct and document DPIA for high-risk data processing activities annually.",
+    "pii_triggers": []
+  },
+  {
+    "id": 13,
+    "title": "Lawful Purpose of Processing",
+    "section": "Section 4",
+    "section_key": "section_4",
+    "severity": "HIGH",
+    "check": "lawful_purpose",
+    "description": "Personal data may be processed only for lawful purposes with consent or a legitimate use.",
+    "remediation": "Document a legal basis for every data processing activity in a data processing register.",
+    "pii_triggers": ["AADHAAR", "PAN", "PASSPORT", "VOTER_ID"]
+  },
+  {
+    "id": 14,
+    "title": "PII Masking in Non-Production Environments",
+    "section": "Section 8(1)",
+    "section_key": "section_8",
+    "severity": "HIGH",
+    "check": "pii_masked_in_non_prod",
+    "description": "Actual PII must not be used in development, testing or analytics environments.",
+    "remediation": "Implement data masking / synthetic data generation pipelines for non-production environments.",
+    "pii_triggers": ["AADHAAR", "PAN", "CREDIT_CARD", "MOBILE", "EMAIL_ADDRESS"]
+  }
+]

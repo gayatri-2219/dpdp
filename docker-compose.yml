@@ -1,0 +1,126 @@
+# version removed (obsolete in modern Docker Compose)
+
+services:
+  # ─────────────────────────────────────────
+  # PostgreSQL + pgvector
+  # ─────────────────────────────────────────
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: dpdp_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-dpdp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dpdp_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-dpdp_compliance}
+    ports:
+      - "5433:5432"   # host:5433 → container:5432 (avoids conflict with local Postgres)
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dpdp} -d ${POSTGRES_DB:-dpdp_compliance}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dpdp_net
+
+  # ─────────────────────────────────────────
+  # Redis (Celery broker + result backend)
+  # ─────────────────────────────────────────
+  redis:
+    image: redis:7.2-alpine
+    container_name: dpdp_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --save 60 1 --loglevel warning
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dpdp_net
+
+  # ─────────────────────────────────────────
+  # FastAPI Backend
+  # ─────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: dpdp_backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-dpdp}:${POSTGRES_PASSWORD:-dpdp_secret}@postgres:5432/${POSTGRES_DB:-dpdp_compliance}
+      REDIS_URL: redis://redis:6379/0
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - uploads_data:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - dpdp_net
+
+  # ─────────────────────────────────────────
+  # Celery Worker
+  # ─────────────────────────────────────────
+  celery_worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: dpdp_celery
+    restart: unless-stopped
+    command: celery -A celery_app worker --loglevel=info --concurrency=2
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-dpdp}:${POSTGRES_PASSWORD:-dpdp_secret}@postgres:5432/${POSTGRES_DB:-dpdp_compliance}
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - ./backend:/app
+      - uploads_data:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - dpdp_net
+
+  # ─────────────────────────────────────────
+  # Next.js Frontend
+  # ─────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: dpdp_frontend
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - dpdp_net
+
+volumes:
+  postgres_data:
+  redis_data:
+  uploads_data:
+
+networks:
+  dpdp_net:
+    driver: bridge

@@ -7,7 +7,10 @@ from parsers.factory import ParserFactory
 import time
 
 # Sync engine for Celery tasks
-engine = create_engine(settings.DATABASE_URL.replace('+asyncpg', ''), echo=False)
+_sync_db_url = settings.DATABASE_URL.replace('+asyncpg', '')
+if _sync_db_url.startswith("postgres://"):
+    _sync_db_url = _sync_db_url.replace("postgres://", "postgresql://", 1)
+engine = create_engine(_sync_db_url, echo=False)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 @celery_app.task(bind=True, max_retries=3)

@@ -12,10 +12,7 @@ services:
           name: dpdp-db
           property: connectionString
       - key: REDIS_URL
-        fromService:
-          type: pserv
-          name: dpdp-redis
-          property: connectionString
+        value: redis://dpdp-redis:6379
       - key: GEMINI_API_KEY
         sync: false
 
